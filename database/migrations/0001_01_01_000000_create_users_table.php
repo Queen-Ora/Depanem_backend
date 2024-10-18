@@ -21,6 +21,9 @@ return new class extends Migration
             $table->string('phone')->unique();
             $table->string('avatar')->default('default.png');
             $table->integer('status')->default(0);
+            $table->string('profession')->nullable();
+            $table->string('matricule')->nullable();
+            $table->string('localisation')->nullable();
             $table->timestamp('email_verified_at')->nullable();
             $table->rememberToken();
             $table->timestamps();

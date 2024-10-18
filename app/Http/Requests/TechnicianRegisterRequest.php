@@ -6,7 +6,7 @@ use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
 
-class RegisterRequest extends FormRequest
+class technicianRegisterRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -34,10 +34,18 @@ class RegisterRequest extends FormRequest
                 'regex:/^(\\+228)?[97]\\d{7}$/',
                 'unique:users'
             ],
-
-            'avatar' => ['nullable', 'image', 'mimes:jpeg,jpg,png,gif', 'max:2048'],
-
+            'profession' => ['required', 'string', 'max:255', 'min:5'],
+            'matricule' => ['required', 'string', 'max:255', 'min:5'],
+            'localisation' => [
+                'required',
+                'string',
+                'max:255',
+                'min:5',
+                'regex:/^(https?:\/\/)?(www\.)?(maps\.google\.com|goo\.gl|maps\.app\.goo\.gl)\/.*$/'
+            ],
+            'avatar' => ['nullable', 'image', 'mimes:jpeg,jpg,png,gif', 'max:2048'],       
         ];
+
     }
     public function messages(): array
     {
@@ -46,20 +54,13 @@ class RegisterRequest extends FormRequest
             'password.min' => 'Le mot de passe doit contenir au moins 8 caractères.',
             'phone.min' => 'Le numéro de téléphone doit contenir au moins 8 caractères.',
             'avatar.image' => 'Le fichier doit être une image.',
+            'localisation.regex' => 'Veuillez fournir une URL valide pour Google Maps.',
             'avatar.mimes' => 'Le fichier doit être une image au format jpeg, jpg, png ou gif.',
             'avatar.max' => 'Le fichier doit avoir moins de 2 Mo.',
-            'email.unique' => 'Cette adresse e-mail est déjà utilisée.',
-            'phone.unique' => 'Ce numéro de téléphone est déjà utilisé.',
-            'phone.regex' => 'Le numéro de téléphone doit être valide, commencer par 9 ou 7 et comporter 8 chiffres, avec ou sans le code pays (+228).',
+            'email.unique' => 'Cette adresse e-mail est deja utilisée.',
+            'phone.unique' => 'Ce numero de telephone est deja utilisé.',
+            'phone.regex' => 'Le numero de telephone doit etre valide, commencer par 9 ou 7 et comporter 8 chiffres, avec ou sans le code pays (+228).',
             'password.confirmed' => 'Les mots de passe ne sont pas identiques.',
-            'password_confirmation.required' => 'Veuillez confirmer votre mot de passe.',
-            'FirstName.required' => 'Veuillez entrer votre prénom.',
-            'FirstName.min' => 'Votre prénom doit faire au moins 5 caractères.',
-            'FirstName.max' => 'Votre prénom ne doit pas faire plus de 255 caractères.',
-            'LastName.required' => 'Veuillez entrer votre nom.',
-            'LastName.min' => 'Votre nom doit faire au moins 5 caractères.',
-            'LastName.max' => 'Votre nom ne doit pas faire plus de 255 caractères.',
-
         ];
     }
     protected function failedValidation(Validator $validator)

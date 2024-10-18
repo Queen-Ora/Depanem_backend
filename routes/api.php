@@ -10,6 +10,9 @@ Route::get('/user', function (Request $request) {
 
 route::prefix('depanem')->group(function () {
     Route::post('registerUser', [AuthController::class, 'registerUser']);
+    Route::post('technicianRegister', [AuthController::class, 'TechnicianRegister']);
+    Route::post('login', [AuthController::class, 'Login']);
+    Route::get('users', [AuthController::class, 'listUsers']);
    
     
    
