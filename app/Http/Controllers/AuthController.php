@@ -29,6 +29,7 @@ class AuthController extends Controller
                 $file->move(public_path('uploads'), $filename);
                 $user->avatar = $filename;
             }
+            
 
             //  Mail::to($request->email)->send(new AccountMail($request->name));
             $user->save();
@@ -114,4 +115,34 @@ class AuthController extends Controller
             ], 500);
         }
     }
+    public function CurrentUser($id)
+{
+    try {
+        $user = User::find($id);
+
+        if ($user) {
+            // Ajout de l'URL complète de l'avatar
+            $user->avatar = $user->avatar 
+            ? url('uploads/' . $user->avatar)  // Si l'avatar est personnalisé
+            : asset('default.png');  // Si l'avatar est par défaut
+
+
+            return response()->json([
+                'user' => $user,
+                // 'avatar_url' => asset('uploads/'. $user->avatar),
+            ], 200);
+        } else {
+            return response()->json([
+                'message' => 'Utilisateur non trouvé',
+            ], 404);
+        }
+    } catch (\Exception $e) {
+        return response()->json([
+            'message' => 'Une erreur est survenue lors de la sélection de l\'utilisateur.',
+            'error' => $e->getMessage()
+        ], 500);
+    }
+}
+
+    
 }
