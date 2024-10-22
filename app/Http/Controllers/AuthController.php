@@ -84,7 +84,10 @@ class AuthController extends Controller
     public function Login(Request $request)
     {
         try {
-            $user = User::where('email', $request->email)->first();
+            $user = User::where('phone', $request->email)
+            ->orWhere('email', $request->email)
+            ->first();
+     
             if (!$user || !Hash::check($request->password, $user->password)) {
                 return response()->json([
                     'message' => 'Email ou mot de passe incorrect'
