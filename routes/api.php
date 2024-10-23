@@ -14,6 +14,15 @@ route::prefix('depanem')->group(function () {
     Route::post('login', [AuthController::class, 'Login']);
     Route::get('users', [AuthController::class, 'listUsers']);
     Route::get('currentUser/{id}', [AuthController::class, 'CurrentUser']);
+    Route::get('CountUsers', [AuthController::class, 'CountUsers']);
+    Route::get('CountTechnicians', [AuthController::class, 'CountTechnicians']);
+
+
+
+
+
+
+
    
     
    

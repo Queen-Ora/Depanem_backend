@@ -12,7 +12,6 @@ class AuthController extends Controller
 {
     public function registerUser(RegisterRequest $request)
     {
-
         try {
             //  return response()->json($request->all());
             $user = new User();
@@ -29,7 +28,7 @@ class AuthController extends Controller
                 $file->move(public_path('uploads'), $filename);
                 $user->avatar = $filename;
             }
-            
+
 
             //  Mail::to($request->email)->send(new AccountMail($request->name));
             $user->save();
@@ -85,15 +84,15 @@ class AuthController extends Controller
     {
         try {
             $user = User::where('phone', $request->email)
-            ->orWhere('email', $request->email)
-            ->first();
-     
+                ->orWhere('email', $request->email)
+                ->first();
+
             if (!$user || !Hash::check($request->password, $user->password)) {
                 return response()->json([
                     'message' => 'Email ou mot de passe incorrect'
                 ], 401);
             }
-        // $token = $user->createToken('authToken')->plainTextToken;
+            // $token = $user->createToken('authToken')->plainTextToken;
             return response()->json([
                 'user' => $user,
                 // 'token' => $token
@@ -105,7 +104,8 @@ class AuthController extends Controller
             ], 500);
         }
     }
-    public function listUsers(){
+    public function listUsers()
+    {
         try {
             $users = User::all();
             return response()->json([
@@ -113,39 +113,65 @@ class AuthController extends Controller
             ], 200);
         } catch (\Exception $e) {
             return response()->json([
-               'message' => 'Une erreur est survenue lors de la récupération des utilisateurs.',
+                'message' => 'Une erreur est survenue lors de la récupération des utilisateurs.',
                 'error' => $e->getMessage()
             ], 500);
         }
     }
     public function CurrentUser($id)
-{
-    try {
-        $user = User::find($id);
+    {
+        try {
+            $user = User::find($id);
 
-        if ($user) {
-            // Ajout de l'URL complète de l'avatar
-            $user->avatar = $user->avatar 
-            ? url('uploads/' . $user->avatar)  // Si l'avatar est personnalisé
-            : asset('default.png');  // Si l'avatar est par défaut
+            if ($user) {
+                // Ajout de l'URL complète de l'avatar
+                $user->avatar = $user->avatar
+                    ? url('uploads/' . $user->avatar)  // Si l'avatar est personnalisé
+                    : asset('default.png');  // Si l'avatar est par défaut
 
 
+                return response()->json([
+                    'user' => $user,
+                    // 'avatar_url' => asset('uploads/'. $user->avatar),
+                ], 200);
+            } else {
+                return response()->json([
+                    'message' => 'Utilisateur non trouvé',
+                ], 404);
+            }
+        } catch (\Exception $e) {
             return response()->json([
-                'user' => $user,
-                // 'avatar_url' => asset('uploads/'. $user->avatar),
-            ], 200);
-        } else {
-            return response()->json([
-                'message' => 'Utilisateur non trouvé',
-            ], 404);
+                'message' => 'Une erreur est survenue lors de la sélection de l\'utilisateur.',
+                'error' => $e->getMessage()
+            ], 500);
         }
-    } catch (\Exception $e) {
-        return response()->json([
-            'message' => 'Une erreur est survenue lors de la sélection de l\'utilisateur.',
-            'error' => $e->getMessage()
-        ], 500);
     }
-}
-
-    
+    public function CountUsers()
+    {
+        try {
+            $users = User::where('status', 0)->get();
+            return response()->json([
+                count($users)
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'Une erreur est survenue lors de la sélection des utilisateurs.',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
+    public function CountTechnicians()
+    {
+        try {
+            $technicians = User::where('status', 1)->get();
+            return response()->json([
+                count($technicians)
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'Une erreur est survenue lors de la sélection des techniciens.',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
 }
