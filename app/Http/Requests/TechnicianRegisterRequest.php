@@ -6,7 +6,7 @@ use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
 
-class technicianRegisterRequest extends FormRequest
+class TechnicianRegisterRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.

@@ -73,6 +73,7 @@ class AuthController extends Controller
                 'message' => 'Inscription spécici!',
                 'user' => $user,
             ], 201);
+
         } catch (\Exception $e) {
             return response()->json([
                 'message' => 'Une erreur est survenue lors de l\'inscription.',
@@ -173,5 +174,71 @@ class AuthController extends Controller
                 'error' => $e->getMessage()
             ], 500);
         }
+    }
+
+    public function CheckIsTechnician($id)
+    {
+        try {
+            $isTechnician = User::where('id', $id)->where('status', 1)->first(); 
+            return response()->json([
+                $isTechnician? true : false,  // Si l'utilisateur est un technicien
+                // 'isTechnician' => $isTechnician? true : false,  // Si l'utilisateur est un technicien
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'Une erreur est survenue lors de la sélection du technicien.',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function GetAllTechnicians(){
+        try {
+            $technicians = User::where('status', 1)
+            ->select('id', 'firstname', 'avatar', 'profession')
+            ->get()
+            ->groupBy('profession');
+
+            $formattedTechnicians = [];
+
+            foreach ($technicians as $profession => $techniciansList) {
+                $formattedTechnicians[$profession] = $techniciansList->map(function ($technician) {
+                    return [
+                        'id' => $technician->id,
+                        'name' => $technician->firstname,
+                        'avatar' => $technician->avatar,
+                    ];
+                })->toArray();
+            }
+            
+            return response()->json($formattedTechnicians);
+           
+           
+            // return response()->json(['technicians' => $formattedTechnicians]);
+            
+            // return response()->json([
+            //     $technicians
+            // ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'Une erreur est survenue lors de la 선택 des techniciens.',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function GetLocalization($id){
+        try {
+            $user = User::where('id', $id)->where('status', 0)->first(); 
+            return response()->json([
+                'localisation' => $user->localisation,
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'Une erreur est survenue lors de la récupération de la localisation.',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+
     }
 }
