@@ -19,10 +19,20 @@ route::prefix('depanem')->group(function () {
     Route::get('CountTechnicians', [AuthController::class, 'CountTechnicians']);
     Route::get('CheckIsTechnician/{id}', [AuthController::class, 'CheckIsTechnician']);
     Route::get('GetAllTechnicians', [AuthController::class, 'GetAllTechnicians']);
+    //routes for Forgotten password  
+    Route::post('forgot-password', [AuthController::class, 'Forgotten_password']);
+    Route::post('VerifyOTP', [AuthController::class, 'Verify_otp']);
+    Route::post('ResetPassword', [AuthController::class, 'Reset_password']);
+
+    // Route::post('ResetPassword', [AuthController::class, 'ResetPassword']);
+    // Route::put('ResetPassword/{token}', [AuthController::class, 'ResetPassword']);
+    
+    // Route::get('GetTechnician/{id}', [AuthController::class, 'GetTechnician']);
     
     // Route::get('GetLocation/{id}', [AuthController::class, 'GetLocalization']);
     // php artisan serve --host 0.0.0.0 --port 8000
     // npm run dev:host
+    // php artisan migrate:refresh --path=database/migrations/la migration.php
     
     
     
