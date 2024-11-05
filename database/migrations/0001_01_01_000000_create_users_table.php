@@ -22,6 +22,7 @@ return new class extends Migration
             $table->string('avatar')->nullable();
             $table->integer('status')->default(0);
             $table->string('profession')->nullable();
+            
             $table->string('matricule')->nullable();
             $table->string('localisation')->nullable();
             $table->timestamp('email_verified_at')->nullable();
