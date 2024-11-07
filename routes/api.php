@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\OpinionController;
 use App\Http\Controllers\ReqController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -26,6 +27,11 @@ route::prefix('depanem')->group(function () {
 
     Route::post('editUser/{id}', [AuthController::class, 'UpdateUser']);
     Route::post('editTechnician/{id}', [AuthController::class, 'UpdateUser']);
+
+
+    Route::post('saveOpinion/{id}', [OpinionController::class, 'PublishOpinion']);
+
+
 
 
 
