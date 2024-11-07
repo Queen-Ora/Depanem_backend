@@ -24,6 +24,11 @@ route::prefix('depanem')->group(function () {
     Route::post('VerifyOTP', [AuthController::class, 'Verify_otp']);
     Route::post('ResetPassword', [AuthController::class, 'Reset_password']);
 
+    Route::post('editUser/{id}', [AuthController::class, 'UpdateUser']);
+    Route::post('editTechnician/{id}', [AuthController::class, 'UpdateUser']);
+
+
+
     // Route::post('ResetPassword', [AuthController::class, 'ResetPassword']);
     // Route::put('ResetPassword/{token}', [AuthController::class, 'ResetPassword']);
     

@@ -46,6 +46,7 @@ class AuthController extends Controller
             ], 500);
         }
     }
+
     public function TechnicianRegister(technicianRegisterRequest $request)
     {
 
@@ -76,7 +77,6 @@ class AuthController extends Controller
                 'message' => 'Inscription spécici!',
                 'user' => $user,
             ], 201);
-
         } catch (\Exception $e) {
             return response()->json([
                 'message' => 'Une erreur est survenue lors de l\'inscription.',
@@ -84,6 +84,7 @@ class AuthController extends Controller
             ], 500);
         }
     }
+
     public function Login(Request $request)
     {
         try {
@@ -108,6 +109,7 @@ class AuthController extends Controller
             ], 500);
         }
     }
+
     public function listUsers()
     {
         try {
@@ -122,6 +124,7 @@ class AuthController extends Controller
             ], 500);
         }
     }
+
     public function CurrentUser($id)
     {
         try {
@@ -150,6 +153,7 @@ class AuthController extends Controller
             ], 500);
         }
     }
+
     public function CountUsers()
     {
         try {
@@ -164,6 +168,7 @@ class AuthController extends Controller
             ], 500);
         }
     }
+
     public function CountTechnicians()
     {
         try {
@@ -179,12 +184,13 @@ class AuthController extends Controller
         }
     }
 
+
     public function CheckIsTechnician($id)
     {
         try {
-            $isTechnician = User::where('id', $id)->where('status', 1)->first(); 
+            $isTechnician = User::where('id', $id)->where('status', 1)->first();
             return response()->json([
-                $isTechnician? true : false,  // Si l'utilisateur est un technicien
+                $isTechnician ? true : false,  // Si l'utilisateur est un technicien
                 // 'isTechnician' => $isTechnician? true : false,  // Si l'utilisateur est un technicien
             ], 200);
         } catch (\Exception $e) {
@@ -195,12 +201,13 @@ class AuthController extends Controller
         }
     }
 
-    public function GetAllTechnicians(){
+    public function GetAllTechnicians()
+    {
         try {
             $technicians = User::where('status', 1)
-            ->select('id', 'firstname', 'avatar', 'profession')
-            ->get()
-            ->groupBy('profession');
+                ->select('id', 'firstname', 'avatar', 'profession')
+                ->get()
+                ->groupBy('profession');
 
             $formattedTechnicians = [];
 
@@ -213,12 +220,12 @@ class AuthController extends Controller
                     ];
                 })->toArray();
             }
-            
+
             return response()->json($formattedTechnicians);
-           
-           
+
+
             // return response()->json(['technicians' => $formattedTechnicians]);
-            
+
             // return response()->json([
             //     $technicians
             // ], 200);
@@ -230,9 +237,10 @@ class AuthController extends Controller
         }
     }
 
-    public function GetTechnician($id){
+    public function GetTechnician($id)
+    {
         try {
-            $technician = User::where('id', $id)->where('status', 1)->first(); 
+            $technician = User::where('id', $id)->where('status', 1)->first();
             return response()->json([
                 'technician' => $technician,
             ], 200);
@@ -334,9 +342,94 @@ class AuthController extends Controller
         ], 200);
     }
 
-    public function GetLocalization($id){
+    public function UpdateUser(Request $request, $id)
+    {
         try {
-            $user = User::where('id', $id)->where('status', 0)->first(); 
+            $user = User::find($id);
+
+            $validatedData = $request->validate([
+                'lastname' => 'required|string|max:255|min:5',
+                'firstname' => 'required|string|max:255 | min:5',
+                'email' => 'nullable|email|unique:users,email,' . $user->id,  // Vérifie que l'email est unique mais autorise l'email actuel de l'utilisateur
+                'phone' => 'required|string|max:255|regex:/^(\\+228)?[97]\\d{7}$/|unique:users,phone,' . $user->id,
+                'avatar' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048', // Valider le type d'image et sa taille
+            ]);
+            $user->firstname = $request->firstname;
+            $user->lastname = $request->lastname;
+            $user->email = $request->email;
+            $user->phone = $request->phone;
+
+            // Upload avatar
+
+            if ($request->hasFile('avatar')) {
+                // Supprimer l'ancien avatar si nécessaire
+                if ($user->avatar && file_exists(public_path('uploads/' . $user->avatar))) {
+                    unlink(public_path('uploads/' . $user->avatar));
+                }
+
+                // Enregistrer le nouvel avatar
+                $file = $request->file('avatar');
+                $filename = time() . '.' . $file->getClientOriginalExtension();
+                $file->move(public_path('uploads'), $filename);
+                $user->avatar = $filename;
+            }
+            $user->save();
+            return response()->json([
+                'user' => $user,
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'Une erreur est survenue lors de la modification de l\'utilisateur.',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
+    
+public function UpdateTechnician(Request $request , $id ){
+    try {
+        $user = User::find($id);
+
+        $validatedData = $request->validate([
+            'lastname' => 'required|string|max:255|min:5',
+            'firstname' => 'required|string|max:255 | min:5',
+            'email' => 'nullable|email|unique:users,email,' . $user->id,  // Vérifie que l'email est unique mais autorise l'email actuel de l'utilisateur
+            'phone' => 'required|string|max:255|regex:/^(\\+228)?[97]\\d{7}$/|unique:users,phone,' . $user->id,
+            'avatar' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048', // Valider le type d'image et sa taille
+        ]);
+        $user->firstname = $request->firstname;
+        $user->lastname = $request->lastname;
+        $user->email = $request->email;
+        $user->phone = $request->phone;
+
+        // Upload avatar
+
+        if ($request->hasFile('avatar')) {
+            // Supprimer l'ancien avatar si nécessaire
+            if ($user->avatar && file_exists(public_path('uploads/' . $user->avatar))) {
+                unlink(public_path('uploads/' . $user->avatar));
+            }
+
+            // Enregistrer le nouvel avatar
+            $file = $request->file('avatar');
+            $filename = time() . '.' . $file->getClientOriginalExtension();
+            $file->move(public_path('uploads'), $filename);
+            $user->avatar = $filename;
+        }
+        $user->save();
+        return response()->json([
+            'user' => $user,
+        ], 200);
+    } catch (\Exception $e) {
+        return response()->json([
+            'message' => 'Une erreur est survenue lors de la modification de l\'utilisateur.',
+            'error' => $e->getMessage()
+        ], 500);
+    }
+}
+    public function GetLocalization($id)
+    {
+        try {
+            $user = User::where('id', $id)->where('status', 0)->first();
             return response()->json([
                 'localisation' => $user->localisation,
             ], 200);
@@ -346,6 +439,5 @@ class AuthController extends Controller
                 'error' => $e->getMessage()
             ], 500);
         }
-
     }
 }
