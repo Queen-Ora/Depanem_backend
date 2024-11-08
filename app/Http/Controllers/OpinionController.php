@@ -17,10 +17,6 @@ class OpinionController extends Controller
                 'opinion.required' => 'L\'opinion est obligatoire.',
                 'opinion.max' => 'L\'opinion ne peut pas dépasser 100 caractères.',
             ]);
-    
-  
-            
-    
             // Créer et sauvegarder l'opinion
             $opinion = new Opinion();
             $opinion->user_id = $id;
@@ -40,7 +36,5 @@ class OpinionController extends Controller
                 'errors' => $e->errors()
             ], 422);
         }
-        
     }
-    
 }

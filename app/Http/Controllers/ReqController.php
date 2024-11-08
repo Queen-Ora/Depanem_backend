@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 
 use App\Models\Request as RequestModel;
+use App\Models\User;
 
 class ReqController extends Controller
 {
@@ -19,6 +20,11 @@ class ReqController extends Controller
             $Req->technician_id = $technician_id;
             // $Req->location = $request->localisation;
 
+            //modification du champ isAvailable pour le technicien
+            $technician = User::find($technician_id);
+            $technician->isAvailable = 0;
+            
+            $technician->save();
             $Req->save();
 
             return response()->json([
@@ -114,7 +120,7 @@ class ReqController extends Controller
             ], 500);
         }
     }
-
+    
     public function countCheckedRequests($technician_id)
     {
         $checkedRequestsCount = RequestModel::where('technician_id', $technician_id)

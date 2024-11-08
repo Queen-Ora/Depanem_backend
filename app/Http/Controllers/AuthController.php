@@ -59,7 +59,7 @@ class AuthController extends Controller
             $user->email = $request->email;
             $user->phone = $request->phone;
             $user->profession = $request->profession;
-            $user->matricule = $request->matricule;
+            // $user->matricule = $request->matricule;
             $user->localisation = $request->localisation;
             $user->status = 1;
             $user->password = Hash::make($request->password);
@@ -205,6 +205,7 @@ class AuthController extends Controller
     {
         try {
             $technicians = User::where('status', 1)
+                ->where('isAvailable', 1)
                 ->select('id', 'firstname', 'avatar', 'profession')
                 ->get()
                 ->groupBy('profession');
@@ -422,7 +423,7 @@ public function UpdateTechnician(Request $request , $id ){
     } catch (\Exception $e) {
         return response()->json([
             'message' => 'Une erreur est survenue lors de la modification de l\'utilisateur.',
-            'error' => $e->getMessage()
+            // 'error' => $e->getMessage()
         ], 500);
     }
 }
