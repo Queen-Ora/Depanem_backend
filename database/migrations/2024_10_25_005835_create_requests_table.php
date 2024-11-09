@@ -16,8 +16,10 @@ return new class extends Migration
             $table->unsignedBigInteger('user_id');
             $table->unsignedBigInteger('technician_id');
             $table->boolean('isChecked')->default(false);
+            $table->boolean('sender')->default(false);
+            $table->string('status')->nullable();
             
-            // Champs pour latitude et longitude
+            // Champs pour latitude et longitudeé
             // $table->decimal('latitude', 10, 7)->nullable();
             // $table->decimal('longitude', 10, 7)->nullable();
             

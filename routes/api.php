@@ -27,6 +27,7 @@ route::prefix('depanem')->group(function () {
 
     Route::post('editUser/{id}', [AuthController::class, 'UpdateUser']);
     Route::post('editTechnician/{id}', [AuthController::class, 'UpdateUser']);
+    Route::get('available/{id}', [AuthController::class, 'Avaibility']);  
 
 
     Route::post('saveOpinion/{id}', [OpinionController::class, 'PublishOpinion']);
@@ -51,6 +52,13 @@ route::prefix('depanem')->group(function () {
     Route::get('/GetRequestsByTechnician/{technician_id}', [ReqController::class, 'getRequestsByTechnician']);
     Route::put('UpdateRequest/{id}', [ReqController::class, 'updateRequest']);
     Route::get('CountCheckedRequests/{technician_id}', [ReqController::class, 'countCheckedRequests']);
+    Route::get('AcceptService/{technician_id}/{user_id}', [ReqController::class, 'AcceptService']);
+    Route::get('/GetRequestsByUser/{user_id}', [ReqController::class, 'getRequestsByUser']);
+    Route::get('/RejectRequest/{request_id}', [ReqController::class, 'RejectRequest']);
+
+
+
+
 
 
     Route::get('GetAllRequests/{tech_id}', [ReqController::class, 'GetAllRequests']);

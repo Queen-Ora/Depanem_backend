@@ -183,8 +183,6 @@ class AuthController extends Controller
             ], 500);
         }
     }
-
-
     public function CheckIsTechnician($id)
     {
         try {
@@ -200,7 +198,6 @@ class AuthController extends Controller
             ], 500);
         }
     }
-
     public function GetAllTechnicians()
     {
         try {
@@ -437,6 +434,23 @@ public function UpdateTechnician(Request $request , $id ){
         } catch (\Exception $e) {
             return response()->json([
                 'message' => 'Une erreur est survenue lors de la récupération de la localisation.',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function Avaibility($id){
+        try {
+            $user = User::find($id);
+            $user->isAvailable = 1;
+            $user->save();
+            return response()->json([
+               'message' => 'L\'état du compte a été modifié avec succès.',
+                'user' => $user,
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+               'message' => 'Une erreur est survenue lors de la modification de l\'état du compte.',
                 'error' => $e->getMessage()
             ], 500);
         }

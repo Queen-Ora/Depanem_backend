@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Request as RequestModel;
 use App\Models\User;
+use PhpParser\Node\Stmt\TryCatch;
 
 class ReqController extends Controller
 {
@@ -23,7 +24,7 @@ class ReqController extends Controller
             //modification du champ isAvailable pour le technicien
             $technician = User::find($technician_id);
             $technician->isAvailable = 0;
-            
+
             $technician->save();
             $Req->save();
 
@@ -44,6 +45,22 @@ class ReqController extends Controller
                 'error' => $e->getMessage()
             ], 500);
         }
+    }
+
+    public function AcceptService( $technician_id, $user_id)
+    {
+        $Req = new RequestModel();
+        $Req->user_id = $user_id;
+        $Req->technician_id = $technician_id;
+        $Req->isChecked = 1;
+        $Req->sender = 1;
+
+        $Req->save();
+    
+        return response()->json([
+           'message' => 'Le service a été accepté',
+            'data' => $Req
+        ], 200);
     }
 
     public function getRequestsByTechnician($technician_id)
@@ -74,31 +91,56 @@ class ReqController extends Controller
     }
 
     public function getRequestsByUser($user_id)
-    {
+{
+    try {
+        // Récupérer les requêtes pour un utilisateur particulier
+        $requests = RequestModel::where('user_id', $user_id)
+            ->where('isChecked', 1) // Utilise un filtre strict
+            ->where('sender', 1)
+            ->with('user') // Récupère les informations de l'utilisateur qui a envoyé la requête
+            ->get();
+
+        if ($requests->isEmpty()) {
+            return response()->json([
+                'message' => 'Aucune requête trouvée pour cet utilisateur.'
+            ], 404);
+        }
+
+        // Convertir la collection en tableau
+        $requestsArray = $requests->toArray();
+
+        return response()->json([
+            'message' => 'Requêtes récupérées avec succès',
+            'data' => $requestsArray // Renvoie le tableau
+        ], 200);
+    } catch (\Exception $e) {
+        return response()->json([
+            'message' => 'Une erreur est survenue lors de la sélection des requêtes.',
+            'error' => $e->getMessage()
+        ], 500);
+    }
+}
+
+
+    public function RejectRequest($request_id){
         try {
-            // Récupérer les requêtes pour un utilisateur particulier
-            $requests = RequestModel::where('user_id', $user_id)
-                // ->where('isChecked', '=', 1) // Utilise un filtre strict
-                ->with('user') // Récupère les informations de l'utilisateur qui a envoyé la requête
-
-                ->get();
-
-            if ($requests->isEmpty()) {
-                return response()->json([
-                    'message' => 'Aucune requête trouvée pour cet utilisateur.'
-                ], 404);
-            }
+            // Rejeter la requête
+            $request = RequestModel::find($request_id);
+            $request->isChecked = 1;
+            $request->status = "rejeté";
+            $request->save();
 
             return response()->json([
-                'message' => 'Requêtes récupérées avec succès',
-                'data' => $requests
+               'message' => 'La requête a été rejetée avec succès',
+                'data' => $request
             ], 200);
         } catch (\Exception $e) {
             return response()->json([
-                'message' => 'Une erreur est survenue lors de la sélection des requêtes.',
-                'error' => $e->getMessage()
+               'message' => 'Une erreur est survenue lors du rejet de la requête.',
+                // 'error' => $e->getMessage()
             ], 500);
         }
+     
     }
 
     public function updateRequest($request_id)
@@ -116,11 +158,11 @@ class ReqController extends Controller
         } catch (\Exception $e) {
             return response()->json([
                 'message' => 'Une erreur est survenue lors de la mise à jour du statut de la requête.',
-                'error' => $e->getMessage()
+                // 'error' => $e->getMessage()
             ], 500);
         }
     }
-    
+
     public function countCheckedRequests($technician_id)
     {
         $checkedRequestsCount = RequestModel::where('technician_id', $technician_id)
