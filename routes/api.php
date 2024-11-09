@@ -10,6 +10,14 @@ Route::get('/user', function (Request $request) {
     return $request->user();
 })->middleware('auth:sanctum');
 
+route::post('/trial', function (Request $request){
+
+    return response()->json(['message' => 'Hello World!'], 200);
+    return response()->json('kam');
+    // return "kam";
+});
+    
+
 route::prefix('depanem')->group(function () {
     Route::post('registerUser', [AuthController::class, 'registerUser']);
     Route::post('technicianRegister', [AuthController::class, 'TechnicianRegister']);
