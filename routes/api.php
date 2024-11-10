@@ -62,7 +62,10 @@ route::prefix('depanem')->group(function () {
     Route::get('CountCheckedRequests/{technician_id}', [ReqController::class, 'countCheckedRequests']);
     Route::get('AcceptService/{technician_id}/{user_id}', [ReqController::class, 'AcceptService']);
     Route::get('/GetRequestsByUser/{user_id}', [ReqController::class, 'getRequestsByUser']);
-    Route::get('/RejectRequest/{request_id}', [ReqController::class, 'RejectRequest']);
+    Route::get('/RejectRequest', [ReqController::class, 'RejectRequest']);
+    Route::get('/GetRejectRequests', [ReqController::class, 'getRejRequests']);
+    Route::get('/FinishRequest', [ReqController::class, 'FinRequest']);
+    Route::get('/GetFinRequest', [ReqController::class, 'getFinRequests']);
 
 
 

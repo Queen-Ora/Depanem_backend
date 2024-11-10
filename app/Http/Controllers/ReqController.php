@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 
+use App\Models\FinRequest;
+use App\Models\RejRequest;
 use App\Models\Request as RequestModel;
 use App\Models\User;
 use PhpParser\Node\Stmt\TryCatch;
@@ -72,11 +74,7 @@ class ReqController extends Controller
                 ->with('user') // Récupère les informations de l'utilisateur qui a envoyé la requête
                 ->get();
 
-            if ($requests->isEmpty()) {
-                return response()->json([
-                    'message' => 'Aucune requête trouvée pour ce technicien.'
-                ], 404);
-            }
+          
 
             return response()->json([
                 'message' => 'Requêtes récupérées avec succès',
@@ -100,11 +98,7 @@ class ReqController extends Controller
             ->with('user') // Récupère les informations de l'utilisateur qui a envoyé la requête
             ->get();
 
-        if ($requests->isEmpty()) {
-            return response()->json([
-                'message' => 'Aucune requête trouvée pour cet utilisateur.'
-            ], 404);
-        }
+    
 
         // Convertir la collection en tableau
         $requestsArray = $requests->toArray();
@@ -122,25 +116,46 @@ class ReqController extends Controller
 }
 
 
-    public function RejectRequest($request_id){
-        try {
-            // Rejeter la requête
-            $request = RequestModel::find($request_id);
-            $request->isChecked = 1;
-            $request->status = "rejeté";
-            $request->save();
+    public function RejectRequest(){
+    $RejReq=new RejRequest();
+    $RejReq->save();
 
-            return response()->json([
-               'message' => 'La requête a été rejetée avec succès',
-                'data' => $request
-            ], 200);
-        } catch (\Exception $e) {
-            return response()->json([
-               'message' => 'Une erreur est survenue lors du rejet de la requête.',
-                // 'error' => $e->getMessage()
-            ], 500);
-        }
+    return response()->json([
+       'message' => 'La demande a été bien rejetée',
+        'data' => $RejReq
+    ], 200);
      
+    }
+
+    public function getRejRequests()
+    {
+        // Récupérer les requêtes rejetées
+        $rejRequests = RejRequest::all();
+
+        return response()->json([
+           'message' => 'Requêtes rejetées récupérées avec succès',
+            'data' => $rejRequests
+        ], 200); 
+    }
+
+    public function FinRequest(){
+        $FinReq=new FinRequest();
+        $FinReq->save();
+        return response()->json([
+           'message' => 'La demande a été bien financée',
+            'data' => $FinReq
+        ], 200);
+    }
+
+    public function getFinRequests()
+    {
+        // Récupérer les requêtes rejetées
+        $finRequests = FinRequest::all();
+
+        return response()->json([
+           'message' => 'Requêtes rejetées récupérées avec succès',
+            'data' => $finRequests
+        ], 200);
     }
 
     public function updateRequest($request_id)

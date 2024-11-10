@@ -17,7 +17,7 @@ return new class extends Migration
             $table->unsignedBigInteger('technician_id');
             $table->boolean('isChecked')->default(false);
             $table->boolean('sender')->default(false);
-            $table->string('status')->nullable();
+            $table->string('status')->default('pending');
             
             // Champs pour latitude et longitudeé
             // $table->decimal('latitude', 10, 7)->nullable();
