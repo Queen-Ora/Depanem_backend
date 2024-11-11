@@ -116,9 +116,17 @@ class ReqController extends Controller
 }
 
 
-    public function RejectRequest(){
+    public function RejectRequest( $request_id, $user_id){    
     $RejReq=new RejRequest();
     $RejReq->save();
+
+    $request = RequestModel::find($request_id);
+    $request->isChecked = 1;
+    $request->save();
+
+    $user = User::find($user_id);
+            $user->isAvailable = 1;
+            $user->save();
 
     return response()->json([
        'message' => 'La demande a été bien rejetée',
@@ -138,9 +146,18 @@ class ReqController extends Controller
         ], 200); 
     }
 
-    public function FinRequest(){
+    public function FinRequest( $request_id, $user_id){
         $FinReq=new FinRequest();
         $FinReq->save();
+
+        $request = RequestModel::find($request_id);
+        $request->isChecked = 1;
+        $request->save();
+
+        $user = User::find($user_id);
+        $user->isAvailable = 1;
+        $user->save();
+
         return response()->json([
            'message' => 'La demande a été bien financée',
             'data' => $FinReq
@@ -156,6 +173,7 @@ class ReqController extends Controller
            'message' => 'Requêtes rejetées récupérées avec succès',
             'data' => $finRequests
         ], 200);
+        
     }
 
     public function updateRequest($request_id)

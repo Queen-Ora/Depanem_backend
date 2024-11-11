@@ -39,17 +39,15 @@ route::prefix('depanem')->group(function () {
 
 
     Route::post('saveOpinion/{id}', [OpinionController::class, 'PublishOpinion']);
+    Route::get('getOpinions', [OpinionController::class, 'GetOpinions']);
 
 
 
 
 
-    // Route::post('ResetPassword', [AuthController::class, 'ResetPassword']);
-    // Route::put('ResetPassword/{token}', [AuthController::class, 'ResetPassword']);
-    
-    // Route::get('GetTechnician/{id}', [AuthController::class, 'GetTechnician']);
-    
-    // Route::get('GetLocation/{id}', [AuthController::class, 'GetLocalization']);
+
+
+   
     // php artisan serve --host 0.0.0.0 --port 8000
     // npm run dev:host
     // php artisan migrate:refresh --path=database/migrations/la migration.php
@@ -62,9 +60,9 @@ route::prefix('depanem')->group(function () {
     Route::get('CountCheckedRequests/{technician_id}', [ReqController::class, 'countCheckedRequests']);
     Route::get('AcceptService/{technician_id}/{user_id}', [ReqController::class, 'AcceptService']);
     Route::get('/GetRequestsByUser/{user_id}', [ReqController::class, 'getRequestsByUser']);
-    Route::get('/RejectRequest', [ReqController::class, 'RejectRequest']);
+    Route::get('/RejectRequest/{request_id}/{user_id}', [ReqController::class, 'RejectRequest']);
     Route::get('/GetRejectRequests', [ReqController::class, 'getRejRequests']);
-    Route::get('/FinishRequest', [ReqController::class, 'FinRequest']);
+    Route::get('/FinishRequest/{request_id}/{user_id}', [ReqController::class, 'FinRequest']);
     Route::get('/GetFinRequest', [ReqController::class, 'getFinRequests']);
 
 
